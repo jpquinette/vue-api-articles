@@ -2,13 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Articles Vanilla JS avec micro-animations</title>
+  <title>Vanilla JS Articles with Micro-Animations</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Liste des articles</h1>
+  <h1>Articles List</h1>
 
   <div class="articles" id="articles-container">
-    <!-- Les articles seront injectés ici -->
+    <!-- Articles will be injected here -->
   </div>
 
   <script>
@@ -28,7 +29,7 @@
       });
     }
 
-    // --- Rendu des articles ---
+    // --- Render articles ---
     function renderArticles(articles) {
       const container = document.getElementById("articles-container");
       container.innerHTML = '';
@@ -49,15 +50,15 @@
         articleDiv.appendChild(body);
         container.appendChild(articleDiv);
 
-        // petit délai pour fade-in
+        // small delay for fade-in effect
         setTimeout(() => { articleDiv.style.opacity = '1'; }, 50);
       });
 
-      // ajouter hover après insertion
+      // add hover effect after insertion
       addHoverEffect();
     }
 
-    // --- Récupération API avec XMLHttpRequest ---
+    // --- API request using XMLHttpRequest ---
     function fetchArticles() {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", "https://jsonplaceholder.typicode.com/posts?_limit=6", true);
@@ -65,35 +66,35 @@
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             const articles = JSON.parse(xhr.responseText);
-            console.log("Articles reçus :", articles);
+            console.log("Received articles:", articles);
             renderArticles(articles);
           } else {
-            console.error("Erreur API :", xhr.status);
+            console.error("API Error:", xhr.status);
           }
         }
       };
       xhr.send();
     }
 
-    // --- Plan de test fonctionnel simple ---
+    // --- Simple functional test plan ---
     function testRenderArticles() {
       const testArticles = [
-        { title: "Test 1", body: "Contenu 1" },
-        { title: "Test 2", body: "Contenu 2" }
+        { title: "Test 1", body: "Content 1" },
+        { title: "Test 2", body: "Content 2" }
       ];
       renderArticles(testArticles);
 
       const rendered = document.querySelectorAll('.article');
-      console.assert(rendered.length === 2, 'Devrait créer 2 articles');
-      console.assert(rendered[0].querySelector('h2').textContent === "Test 1", 'Titre du 1er article correct');
-      console.assert(rendered[1].querySelector('p').textContent === "Contenu 2", 'Texte du 2e article correct');
+      console.assert(rendered.length === 2, 'Should create 2 articles');
+      console.assert(rendered[0].querySelector('h2').textContent === "Test 1", 'First article title is correct');
+      console.assert(rendered[1].querySelector('p').textContent === "Content 2", 'Second article body is correct');
 
-      console.log('Tests unitaires terminés');
+      console.log('Unit tests completed');
     }
 
-    // --- Exécution ---
+    // --- Execution ---
     fetchArticles();
-    // Décommenter pour lancer le test unitaire
+    // Uncomment to run unit test
     // testRenderArticles();
   </script>
 </body>
