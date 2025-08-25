@@ -1,53 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
 
-/* Global */
 body {
   font-family: 'Noto Sans', sans-serif;
-  background: #121212; /* dark background */
+  background: #121212;
   color: #eee;
   margin: 2rem;
 }
 
-/* Titre */
 h1 {
   text-align: center;
   color: #f0a500;
 }
 
-h2{font-size: 1em;}
+h2 {
+  font-size: 1em;
+}
 
-p{font-size: 0.8em;}
+p {
+  font-size: 0.8em;
+}
 
-/* Liste des articles - desktop 3 colonnes x 2 lignes */
 .articles {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-top: 2rem;
 }
 
-/* Carte article */
 .article {
   background: #1e1e1e;
   padding: 1rem;
   border-radius: 6px;
 }
 
-/* Titre article */
 .article h2 {
   color: #f0a500;
   margin-bottom: 0.5rem;
   font-weight: 700;
 }
 
-/* Corps article */
 .article p {
   color: #ccc;
 }
 
-/* Mobile : 1 article par ligne */
 @media (max-width: 768px) {
   .articles {
-    grid-template-columns: 1fr; /* 1 colonne */
+    grid-template-columns: 1fr;
   }
 }
