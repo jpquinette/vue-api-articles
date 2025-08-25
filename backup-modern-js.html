@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Articles Vue CDN</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Liste des articles</h1>
+
+    <div class="articles">
+      <div v-for="article in articles" :key="article.id" class="article">
+        <h2>{{ article.title }}</h2>
+        <p>{{ article.body }}</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted } = Vue
+
+    createApp({
+      setup() {
+        const articles = ref([])
+
+        onMounted(async () => {
+          try {
+            const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=6")
+            articles.value = await res.json()
+            console.log("Articles reçus :", articles.value)
+          } catch (e) {
+            console.error("Erreur API :", e)
+          }
+        })
+
+        return { articles }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>

@@ -2,42 +2,99 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Articles Vue CDN</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <title>Articles Vanilla JS avec micro-animations</title>
 </head>
 <body>
-  <div id="app">
-    <h1>Liste des articles</h1>
+  <h1>Liste des articles</h1>
 
-    <div class="articles">
-      <div v-for="article in articles" :key="article.id" class="article">
-        <h2>{{ article.title }}</h2>
-        <p>{{ article.body }}</p>
-      </div>
-    </div>
+  <div class="articles" id="articles-container">
+    <!-- Les articles seront injectés ici -->
   </div>
 
   <script>
-    const { createApp, ref, onMounted } = Vue
+    // --- Micro-animations ---
+    function addHoverEffect() {
+      const articles = document.querySelectorAll('.article');
+      articles.forEach(article => {
+        article.addEventListener('mouseenter', () => {
+          article.style.transform = 'scale(1.05)';
+          article.style.transition = 'transform 0.3s ease';
+          article.style.boxShadow = '0 4px 15px rgba(255,165,0,0.5)';
+        });
+        article.addEventListener('mouseleave', () => {
+          article.style.transform = 'scale(1)';
+          article.style.boxShadow = 'none';
+        });
+      });
+    }
 
-    createApp({
-      setup() {
-        const articles = ref([])
+    // --- Rendu des articles ---
+    function renderArticles(articles) {
+      const container = document.getElementById("articles-container");
+      container.innerHTML = '';
 
-        onMounted(async () => {
-          try {
-            const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=6")
-            articles.value = await res.json()
-            console.log("Articles reçus :", articles.value)
-          } catch (e) {
-            console.error("Erreur API :", e)
+      articles.forEach(article => {
+        const articleDiv = document.createElement('div');
+        articleDiv.classList.add('article');
+        articleDiv.style.opacity = '0';
+        articleDiv.style.transition = 'opacity 0.5s ease';
+
+        const title = document.createElement('h2');
+        title.textContent = article.title;
+
+        const body = document.createElement('p');
+        body.textContent = article.body;
+
+        articleDiv.appendChild(title);
+        articleDiv.appendChild(body);
+        container.appendChild(articleDiv);
+
+        // petit délai pour fade-in
+        setTimeout(() => { articleDiv.style.opacity = '1'; }, 50);
+      });
+
+      // ajouter hover après insertion
+      addHoverEffect();
+    }
+
+    // --- Récupération API avec XMLHttpRequest ---
+    function fetchArticles() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "https://jsonplaceholder.typicode.com/posts?_limit=6", true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            const articles = JSON.parse(xhr.responseText);
+            console.log("Articles reçus :", articles);
+            renderArticles(articles);
+          } else {
+            console.error("Erreur API :", xhr.status);
           }
-        })
+        }
+      };
+      xhr.send();
+    }
 
-        return { articles }
-      }
-    }).mount('#app')
+    // --- Plan de test fonctionnel simple ---
+    function testRenderArticles() {
+      const testArticles = [
+        { title: "Test 1", body: "Contenu 1" },
+        { title: "Test 2", body: "Contenu 2" }
+      ];
+      renderArticles(testArticles);
+
+      const rendered = document.querySelectorAll('.article');
+      console.assert(rendered.length === 2, 'Devrait créer 2 articles');
+      console.assert(rendered[0].querySelector('h2').textContent === "Test 1", 'Titre du 1er article correct');
+      console.assert(rendered[1].querySelector('p').textContent === "Contenu 2", 'Texte du 2e article correct');
+
+      console.log('Tests unitaires terminés');
+    }
+
+    // --- Exécution ---
+    fetchArticles();
+    // Décommenter pour lancer le test unitaire
+    // testRenderArticles();
   </script>
 </body>
 </html>
